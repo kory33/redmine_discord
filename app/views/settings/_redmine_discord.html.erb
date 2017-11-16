@@ -1,0 +1,25 @@
+<%
+def create_text_input_field(settings, settings_term, label, size=32)
+    field_value = settings[settings_term]
+    field_id = "settings_" + settings_term
+    table_row = <<-EOS
+        <tr>
+            <th>#{label}</th>
+            <td>
+                <input
+                    type="text" id="#{field_id}" size="#{size}" maxlength="#{size}"
+                    value="#{field_value}"
+                    name="settings[#{settings_term}]">
+            </td>
+        </tr>
+    EOS
+    return table_row.html_safe
+end
+%>
+
+<table>
+    <tbody>
+        <%=create_text_input_field(settings, 'webhook_avatar_url', "Webhook Avatar Url", 80)%>
+        <%=create_text_input_field(settings, 'webhook_username', "Webhook Username")%>
+    </tbody>
+</table>

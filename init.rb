@@ -5,4 +5,11 @@ Redmine::Plugin.register :redmine_discord do
   version '0.0.1'
   url 'https://github.com/kory33/redmine_discord'
   author_url 'https://github.com/kory33'
+
+  settings default: {
+      'webhook_avatar_url' => 'https://raw.githubusercontent.com/kory33/redmine_discord/gh_pages/redmine_icon.png',
+      'webhook_username' => 'Redmine Notification'
+    },
+    partial: 'settings/redmine_discord'
+  
 end
