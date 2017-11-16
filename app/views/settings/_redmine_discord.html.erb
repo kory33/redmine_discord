@@ -7,7 +7,7 @@ def create_text_input_field(settings, settings_term, label, size=32)
             <th>#{label}</th>
             <td>
                 <input
-                    type="text" id="#{field_id}" size="#{size}" maxlength="#{size}"
+                    type="text" id="#{field_id}" size="#{size}"
                     value="#{field_value}"
                     name="settings[#{settings_term}]">
             </td>
@@ -19,7 +19,7 @@ end
 
 <table>
     <tbody>
-        <%=create_text_input_field(settings, 'webhook_avatar_url', "Webhook Avatar Url", 80)%>
-        <%=create_text_input_field(settings, 'webhook_username', "Webhook Username")%>
+        <%=create_text_input_field(settings, 'webhook_avatar_url', 'Webhook Avatar Url', 80)%>
+        <%=create_text_input_field(settings, 'webhook_username', 'Webhook Username')%>
     </tbody>
 </table>
