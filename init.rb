@@ -1,3 +1,6 @@
+require 'redmine'
+require_dependency 'redmine_discord/listener'
+
 Redmine::Plugin.register :redmine_discord do
   name 'Redmine Discord plugin'
   author 'kory'
