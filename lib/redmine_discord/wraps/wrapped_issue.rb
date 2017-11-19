@@ -45,5 +45,16 @@ module RedmineDiscord
                 'inline' => true
             }
         end
+
+        def to_heading_title
+            return "#{@issue.project.name} - #{@issue.tracker} ##{@issue.id}: #{@issue.subject}"
+        end
+
+        def resolve_absolute_url()
+            host = Setting.host_name.to_s.chomp('/')
+            protocol = Setting.protocol
+
+            return "#{protocol}://#{host}/issues/#{@issue.id}"
+        end
     end
 end    
