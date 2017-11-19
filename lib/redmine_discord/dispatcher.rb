@@ -3,10 +3,6 @@ require 'httpclient'
 
 module RedmineDiscord
     class DiscordWebhookDispatcher
-        def initialize(settings)
-            @settings = settings
-        end
-
         def dispatch(embed_object, project)
             webhook_body = construct_webhook_body embed_object
             target_urls = fetch_webhook_targets project
@@ -33,8 +29,8 @@ module RedmineDiscord
     private
         def construct_webhook_body(embed_object)
             return {
-                'username' => @settings['webhook_username'],
-                'avatar_url' => @settings['webhook_avatar_url'],
+                'username' => Setting.plugin_redmine_discord['webhook_username'],
+                'avatar_url' => Setting.plugin_redmine_discord['webhook_avatar_url'],
                 'embeds' => embed_object.to_embed_array
             }
         end

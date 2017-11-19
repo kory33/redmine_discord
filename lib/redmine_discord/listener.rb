@@ -4,7 +4,7 @@ require_relative 'dispatcher'
 module RedmineDiscord
     class EventListener < Redmine::Hook::Listener
         def initialize
-            @dispatcher = DiscordWebhookDispatcher.new Setting.plugin_redmine_discord
+            @dispatcher = DiscordWebhookDispatcher.new
         end
 
         def controller_issues_new_after_save(context={})
