@@ -1,4 +1,4 @@
-require_relative 'embed_objects/new_issue_embed'
+require_relative 'embed_objects/issue_embeds'
 require_relative 'dispatcher'
 
 module RedmineDiscord
@@ -12,7 +12,7 @@ module RedmineDiscord
             return if issue.is_private?
 
             project = issue.project
-            embed_object = NewIssueEmbed.new issue
+            embed_object = NewIssueEmbed.new context
 
             @dispatcher.dispatch embed_object, project
         end
