@@ -3,8 +3,6 @@ require_relative '../wraps/wrapped_issue'
 module RedmineDiscord
     class NewIssueEmbed
         def initialize(context)
-            @context = context
-            @controller = context[:controller]
             @wrapped_issue = WrappedIssue.new context[:issue]
         end
 

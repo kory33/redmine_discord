@@ -24,7 +24,7 @@ module RedmineDiscord
             return nil if @issue.due_date == nil
             return {
                 'name' => 'Due Date',
-                'value' => "#{@issue.due_date}",
+                'value' => @issue.due_date.to_s,
                 'inline' => true
             }
         end
@@ -33,7 +33,7 @@ module RedmineDiscord
             return nil if @issue.estimated_hours == nil
             return {
                 'name' => 'Estimated Hours',
-                'value' => "#{@issue.estimated_hours}",
+                'value' => @issue.estimated_hours.to_s,
                 'inline' => true
             }
         end
@@ -41,7 +41,7 @@ module RedmineDiscord
         def to_priority_field
             return {
                 'name' => 'Priority',
-                'value' => "#{@issue.priority.name}",
+                'value' => @issue.priority.name,
                 'inline' => true
             }
         end
