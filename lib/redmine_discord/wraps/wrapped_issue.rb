@@ -50,6 +50,16 @@ module RedmineDiscord
             return "#{@issue.project.name} - #{@issue.tracker} ##{@issue.id}: #{@issue.subject}"
         end
 
+        def to_description_field
+            return nil if @issue.description == nil || @issue.description == ""
+
+            return {
+                'name' => 'Description',
+                'value' => @issue.description,
+                'inline' => false
+            }
+        end
+
         def resolve_absolute_url()
             host = Setting.host_name.to_s.chomp('/')
             protocol = Setting.protocol
@@ -57,4 +67,4 @@ module RedmineDiscord
             return "#{protocol}://#{host}/issues/#{@issue.id}"
         end
     end
-end    
+end

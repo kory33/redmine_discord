@@ -9,6 +9,7 @@ module RedmineDiscord
         end
 
         def to_embed_array
+            # prepare fields in heading embed
             heading_fields = [
                 @wrapped_issue.to_author_field,
                 @wrapped_issue.to_assignee_field,
@@ -18,15 +19,26 @@ module RedmineDiscord
             ].select {|field| field != nil}
 
             heading_url = @wrapped_issue.resolve_absolute_url rescue ""
-            
-            return [
-                {
-                    'url' => heading_url,
-                    'title' => "[New issue] #{@wrapped_issue.to_heading_title}",
+
+            fields = []
+            fields.push({
+                'url' => heading_url,
+                'title' => "[New issue] #{@wrapped_issue.to_heading_title}",
+                'color' => get_fields_color,
+                'fields' => heading_fields
+            })
+
+            description_field = @wrapped_issue.to_description_field
+
+            # add description field if present
+            if description_field != nil then
+                fields.push({
                     'color' => get_fields_color,
-                    'fields' => heading_fields
-                }
-            ]
+                    'fields' => [description_field]
+                })
+            end
+
+            return fields
         end
     
     private
