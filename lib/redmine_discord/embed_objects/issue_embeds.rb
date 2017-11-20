@@ -13,35 +13,37 @@ module RedmineDiscord
                 @wrapped_issue.to_assignee_field,
                 @wrapped_issue.to_due_date_field,
                 @wrapped_issue.to_estimated_hours_field,
-                @wrapped_issue.to_priority_field
+                @wrapped_issue.to_priority_field,
             ].select {|field| field != nil}
+
+            description_field = @wrapped_issue.to_description_field
+
+            if description_field != nil then
+                heading_fields.push get_separator_field
+                heading_fields.push description_field
+            end
 
             heading_url = @wrapped_issue.resolve_absolute_url rescue ""
 
-            fields = []
-            fields.push({
+            return [{
                 'url' => heading_url,
                 'title' => "[New issue] #{@wrapped_issue.to_heading_title}",
                 'color' => get_fields_color,
                 'fields' => heading_fields
-            })
-
-            description_field = @wrapped_issue.to_description_field
-
-            # add description field if present
-            if description_field != nil then
-                fields.push({
-                    'color' => get_fields_color,
-                    'fields' => [description_field]
-                })
-            end
-
-            return fields
+            }]
         end
     
     private
         def get_fields_color
             return 65280
         end
+
+        def get_separator_field
+            return {
+                'name' => '---------------------------',
+                'value' => "\u200b",
+                'inline' => false
+            }
+        end
     end
-end    
+end
