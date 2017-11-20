@@ -9,7 +9,7 @@ module RedmineDiscord
 
         def to_embed_array
             # prepare fields in heading
-			# #compact で nil 要素を削除
+            # #compact で nil 要素を削除
             fields = [
                 @wrapped_issue.to_author_field,
                 @wrapped_issue.to_assignee_field,
@@ -60,7 +60,7 @@ module RedmineDiscord
 
         def to_embed_array
             # prepare fields in heading embed
-			# #compact で nil 要素を削除
+            # #compact で nil 要素を削除
             fields = [
                 # TODO add property diff field
             ].compact
