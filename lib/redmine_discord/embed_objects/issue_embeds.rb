@@ -55,7 +55,7 @@ module RedmineDiscord
             notes_field = @wrapped_journal.to_notes_field
 
             if notes_field
-                # TODO add field separator if diff fields are not empty
+                fields.push @wrapped_issue.get_separator_field unless fields.empty?
                 fields.push notes_field
             end
 
