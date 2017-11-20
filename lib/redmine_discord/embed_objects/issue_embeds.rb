@@ -1,4 +1,5 @@
 require_relative '../wraps/wrapped_issue'
+require_relative '../wraps/wrapped_journal'
 
 module RedmineDiscord
     class NewIssueEmbed
@@ -50,6 +51,7 @@ module RedmineDiscord
     class IssueEditEmbed
         def initialize(context)
             @wrapped_issue = WrappedIssue.new context[:issue]
+            @wrapped_journal = WrappedJournal.new context[:journal]
         end
 
         def to_embed_array
@@ -58,9 +60,12 @@ module RedmineDiscord
                 # TODO add property diff field
             ].select {|field| field != nil}
 
-            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
+            notes_field = @wrapped_journal.to_notes_field
+            if notes_field != nil then
+                fields.push notes_field
+            end
 
-            # TODO add note field
+            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
 
             return [{
                 'url' => heading_url,
