@@ -21,9 +21,9 @@ module RedmineDiscord
             issue = context[:issue]
             journal = context[:journal]
 
-            return if issue.is_private?
-            return if journal.private_notes?
-            
+            # 1行にまとめた
+            return if issue.is_private? || journal.private_notes?
+
             project = issue.project
             embed_object = IssueEditEmbed.new context
 

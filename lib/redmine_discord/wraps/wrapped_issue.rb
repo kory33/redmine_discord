@@ -5,37 +5,44 @@ module RedmineDiscord
         end
 
         def to_author_field
+            # 例外をつぶしていたのを削除
+            # nil 参照防止？
+            # ぼっち演算子で対応
             return {
                 'name' => 'Author',
-                'value' => "#{@issue.author.firstname} #{@issue.author.lastname}",
+                'value' => "#{@issue&.author&.firstname} #{@issue&.author&.lastname}",
                 'inline' => true
-            } rescue nil
+            }
         end
 
         def to_assignee_field
             return {
                 'name' => 'Assignee',
-                'value' => "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
+                'value' => "#{@issue&.assigned_to&.firstname} #{@issue&.assigned_to&.lastname}",
                 'inline' => true
-            } rescue nil
+            }
         end
 
         def to_due_date_field
-            return nil if @issue.due_date == nil
-            return {
-                'name' => 'Due Date',
-                'value' => @issue.due_date.to_s,
-                'inline' => true
-            }
+            # if 式で対応
+            # then がなければ if 式は nil を返すので
+            if @issue.due_date
+                return {
+                    'name' => 'Due Date',
+                    'value' => @issue.due_date.to_s,
+                    'inline' => true
+                }
+            end
         end
 
         def to_estimated_hours_field
-            return nil if @issue.estimated_hours == nil
-            return {
-                'name' => 'Estimated Hours',
-                'value' => @issue.estimated_hours.to_s,
-                'inline' => true
-            }
+            if @issue.estimated_hours
+                return {
+                    'name' => 'Estimated Hours',
+                    'value' => @issue.estimated_hours.to_s,
+                    'inline' => true
+                }
+            end
         end
 
         def to_priority_field
@@ -51,13 +58,15 @@ module RedmineDiscord
         end
 
         def to_description_field
-            return nil if @issue.description == nil || @issue.description == ""
-
-            return {
-                'name' => 'Description',
-                'value' => @issue.description,
-                'inline' => false
-            }
+            # rails 前提であれば #present? で代替可能（多分
+            # https://qiita.com/somewhatgood@github/items/b74107480ee3821784e6
+            if @issue.description.present?
+                return {
+                    'name' => 'Description',
+                    'value' => @issue.description,
+                    'inline' => false
+                }
+            end
         end
 
         def resolve_absolute_url()
