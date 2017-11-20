@@ -12,7 +12,7 @@ module RedmineDiscord
                 'Content-Type' => 'application/json'
             }
 
-			http_client.ssl_config.cert_store.set_default_paths
+            http_client.ssl_config.cert_store.set_default_paths
             http_client.ssl_config.ssl_version = :auto
 
             Thread.new do

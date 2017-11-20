@@ -8,23 +8,23 @@ module RedmineDiscord
         end
 
         def to_embed_array
-            # prepare fields in heading
+            # prepare fields in heading / remove nil fields
             fields = [
                 @wrapped_issue.to_author_field,
                 @wrapped_issue.to_assignee_field,
                 @wrapped_issue.to_due_date_field,
                 @wrapped_issue.to_estimated_hours_field,
                 @wrapped_issue.to_priority_field,
-            ].select {|field| field != nil}
+            ].compact
 
             description_field = @wrapped_issue.to_description_field
 
-            if description_field != nil then
+            if description_field != nil
                 fields.push get_separator_field
                 fields.push description_field
             end
 
-            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
+            heading_url = @wrapped_issue.resolve_absolute_url
 
             return [{
                 'url' => heading_url,
@@ -33,7 +33,7 @@ module RedmineDiscord
                 'fields' => fields
             }]
         end
-    
+
     private
         def get_fields_color
             return 65280
@@ -58,14 +58,16 @@ module RedmineDiscord
             # prepare fields in heading embed
             fields = [
                 # TODO add property diff field
-            ].select {|field| field != nil}
+            ].compact
 
             notes_field = @wrapped_journal.to_notes_field
-            if notes_field != nil then
+
+            if notes_field
+                # TODO add field separator if diff fields are not empty
                 fields.push notes_field
             end
 
-            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
+            heading_url = @wrapped_issue.resolve_absolute_url
 
             return [{
                 'url' => heading_url,

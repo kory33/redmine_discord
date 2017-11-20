@@ -6,15 +6,14 @@ module RedmineDiscord
 
         def to_notes_field
             notes = @journal.notes
-            if notes == nil || notes == "" then
-                return nil
-            end
 
-            return {
-                'name' => 'Notes',
-                'value' => notes,
-                'inline' => false
-            }
+            if notes.present?
+                return {
+                    'name' => 'Notes',
+                    'value' => notes,
+                    'inline' => false
+                }
+            end
         end
     end
-end    
+end

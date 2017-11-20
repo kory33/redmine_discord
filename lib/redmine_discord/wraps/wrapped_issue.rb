@@ -9,33 +9,37 @@ module RedmineDiscord
                 'name' => 'Author',
                 'value' => "#{@issue.author.firstname} #{@issue.author.lastname}",
                 'inline' => true
-            } rescue nil
+            }
         end
 
         def to_assignee_field
-            return {
-                'name' => 'Assignee',
-                'value' => "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
-                'inline' => true
-            } rescue nil
+            if @issue.assigned_to.present?
+                return {
+                    'name' => 'Assignee',
+                    'value' => "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
+                    'inline' => true
+                }
+            end
         end
 
         def to_due_date_field
-            return nil if @issue.due_date == nil
-            return {
-                'name' => 'Due Date',
-                'value' => @issue.due_date.to_s,
-                'inline' => true
-            }
+            if @issue.due_date
+                return {
+                    'name' => 'Due Date',
+                    'value' => @issue.due_date.to_s,
+                    'inline' => true
+                }
+            end
         end
 
         def to_estimated_hours_field
-            return nil if @issue.estimated_hours == nil
-            return {
-                'name' => 'Estimated Hours',
-                'value' => @issue.estimated_hours.to_s,
-                'inline' => true
-            }
+            if @issue.estimated_hours
+                return {
+                    'name' => 'Estimated Hours',
+                    'value' => @issue.estimated_hours.to_s,
+                    'inline' => true
+                }
+            end
         end
 
         def to_priority_field
@@ -51,13 +55,13 @@ module RedmineDiscord
         end
 
         def to_description_field
-            return nil if @issue.description == nil || @issue.description == ""
-
-            return {
-                'name' => 'Description',
-                'value' => @issue.description,
-                'inline' => false
-            }
+            if @issue.description.present?
+                return {
+                    'name' => 'Description',
+                    'value' => @issue.description,
+                    'inline' => false
+                }
+            end
         end
 
         def resolve_absolute_url()
