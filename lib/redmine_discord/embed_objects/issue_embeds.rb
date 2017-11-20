@@ -7,8 +7,8 @@ module RedmineDiscord
         end
 
         def to_embed_array
-            # prepare fields in heading embed
-            heading_fields = [
+            # prepare fields in heading
+            fields = [
                 @wrapped_issue.to_author_field,
                 @wrapped_issue.to_assignee_field,
                 @wrapped_issue.to_due_date_field,
@@ -19,8 +19,8 @@ module RedmineDiscord
             description_field = @wrapped_issue.to_description_field
 
             if description_field != nil then
-                heading_fields.push get_separator_field
-                heading_fields.push description_field
+                fields.push get_separator_field
+                fields.push description_field
             end
 
             heading_url = @wrapped_issue.resolve_absolute_url rescue ""
@@ -29,7 +29,7 @@ module RedmineDiscord
                 'url' => heading_url,
                 'title' => "[New issue] #{@wrapped_issue.to_heading_title}",
                 'color' => get_fields_color,
-                'fields' => heading_fields
+                'fields' => fields
             }]
         end
     
@@ -44,6 +44,35 @@ module RedmineDiscord
                 'value' => "\u200b",
                 'inline' => false
             }
+        end
+    end
+
+    class IssueEditEmbed
+        def initialize(context)
+            @wrapped_issue = WrappedIssue.new context[:issue]
+        end
+
+        def to_embed_array
+            # prepare fields in heading embed
+            fields = [
+                # TODO add property diff field
+            ].select {|field| field != nil}
+
+            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
+
+            # TODO add note field
+
+            return [{
+                'url' => heading_url,
+                'title' => "[Issue update] #{@wrapped_issue.to_heading_title}",
+                'color' => get_fields_color,
+                'fields' => fields
+            }]
+        end
+
+    private
+        def get_fields_color
+            return 16752640
         end
     end
 end
