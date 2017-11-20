@@ -21,7 +21,6 @@ module RedmineDiscord
             issue = context[:issue]
             journal = context[:journal]
 
-            # 1行にまとめた
             return if issue.is_private? || journal.private_notes?
 
             project = issue.project

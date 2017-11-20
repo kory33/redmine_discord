@@ -5,27 +5,24 @@ module RedmineDiscord
         end
 
         def to_author_field
-            # 例外をつぶしていたのを削除
-            # nil 参照防止？
-            # ぼっち演算子で対応
             return {
                 'name' => 'Author',
-                'value' => "#{@issue&.author&.firstname} #{@issue&.author&.lastname}",
+                'value' => "#{@issue.author.firstname} #{@issue.author.lastname}",
                 'inline' => true
             }
         end
 
         def to_assignee_field
-            return {
-                'name' => 'Assignee',
-                'value' => "#{@issue&.assigned_to&.firstname} #{@issue&.assigned_to&.lastname}",
-                'inline' => true
-            }
+            if @issue.assigned_to.present?
+                return {
+                    'name' => 'Assignee',
+                    'value' => "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
+                    'inline' => true
+                }
+            end
         end
 
         def to_due_date_field
-            # if 式で対応
-            # then がなければ if 式は nil を返すので
             if @issue.due_date
                 return {
                     'name' => 'Due Date',
@@ -58,8 +55,6 @@ module RedmineDiscord
         end
 
         def to_description_field
-            # rails 前提であれば #present? で代替可能（多分
-            # https://qiita.com/somewhatgood@github/items/b74107480ee3821784e6
             if @issue.description.present?
                 return {
                     'name' => 'Description',

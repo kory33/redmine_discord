@@ -8,8 +8,7 @@ module RedmineDiscord
         end
 
         def to_embed_array
-            # prepare fields in heading
-            # #compact で nil 要素を削除
+            # prepare fields in heading / remove nil fields
             fields = [
                 @wrapped_issue.to_author_field,
                 @wrapped_issue.to_assignee_field,
@@ -20,14 +19,11 @@ module RedmineDiscord
 
             description_field = @wrapped_issue.to_description_field
 
-            # then は必要がない
             if description_field != nil
                 fields.push get_separator_field
                 fields.push description_field
             end
 
-            # 例外を潰すのはよくないので例外を対応したいなら
-            # #resolve_absolute_url メソッド内で行うべき
             heading_url = @wrapped_issue.resolve_absolute_url
 
             return [{
@@ -60,19 +56,17 @@ module RedmineDiscord
 
         def to_embed_array
             # prepare fields in heading embed
-            # #compact で nil 要素を削除
             fields = [
                 # TODO add property diff field
             ].compact
 
-            # 後置 if を使って一行に
             notes_field = @wrapped_journal.to_notes_field
-            fields.push notes_filed if notes_filed
-            # notes_field 変数すら定義したくないならこういう書き方も
-#           @wrapped_journal.to_notes_field.tap { |it| fields.push it if it }
 
-            # 例外を潰すのはよくないので例外を対応したいなら
-            # #resolve_absolute_url メソッド内で行うべき
+            if notes_field
+                # TODO add field separator if diff fields are not empty
+                fields.push notes_field
+            end
+
             heading_url = @wrapped_issue.resolve_absolute_url
 
             return [{
