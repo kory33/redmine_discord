@@ -70,5 +70,13 @@ module RedmineDiscord
 
             return "#{protocol}://#{host}/issues/#{@issue.id}"
         end
+
+        def get_separator_field
+            return {
+                'name' => '---------------------------',
+                'value' => "\u200b",
+                'inline' => false
+            }
+        end
     end
 end

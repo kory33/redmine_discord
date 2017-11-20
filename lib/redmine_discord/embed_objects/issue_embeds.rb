@@ -20,7 +20,7 @@ module RedmineDiscord
             description_field = @wrapped_issue.to_description_field
 
             if description_field != nil
-                fields.push get_separator_field
+                fields.push @wrapped_issue.get_separator_field
                 fields.push description_field
             end
 
@@ -37,14 +37,6 @@ module RedmineDiscord
     private
         def get_fields_color
             return 65280
-        end
-
-        def get_separator_field
-            return {
-                'name' => '---------------------------',
-                'value' => "\u200b",
-                'inline' => false
-            }
         end
     end
 
