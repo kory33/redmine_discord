@@ -9,22 +9,26 @@ module RedmineDiscord
 
         def to_embed_array
             # prepare fields in heading
+			# #compact で nil 要素を削除
             fields = [
                 @wrapped_issue.to_author_field,
                 @wrapped_issue.to_assignee_field,
                 @wrapped_issue.to_due_date_field,
                 @wrapped_issue.to_estimated_hours_field,
                 @wrapped_issue.to_priority_field,
-            ].select {|field| field != nil}
+            ].compact
 
             description_field = @wrapped_issue.to_description_field
 
-            if description_field != nil then
+            # then は必要がない
+            if description_field != nil
                 fields.push get_separator_field
                 fields.push description_field
             end
 
-            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
+            # 例外を潰すのはよくないので例外を対応したいなら
+            # #resolve_absolute_url メソッド内で行うべき
+            heading_url = @wrapped_issue.resolve_absolute_url
 
             return [{
                 'url' => heading_url,
@@ -33,7 +37,7 @@ module RedmineDiscord
                 'fields' => fields
             }]
         end
-    
+
     private
         def get_fields_color
             return 65280
@@ -56,16 +60,20 @@ module RedmineDiscord
 
         def to_embed_array
             # prepare fields in heading embed
+			# #compact で nil 要素を削除
             fields = [
                 # TODO add property diff field
-            ].select {|field| field != nil}
+            ].compact
 
+            # 後置 if を使って一行に
             notes_field = @wrapped_journal.to_notes_field
-            if notes_field != nil then
-                fields.push notes_field
-            end
+            fields.push notes_filed if notes_filed
+            # notes_field 変数すら定義したくないならこういう書き方も
+#           @wrapped_journal.to_notes_field.tap { |it| fields.push it if it }
 
-            heading_url = @wrapped_issue.resolve_absolute_url rescue ""
+            # 例外を潰すのはよくないので例外を対応したいなら
+            # #resolve_absolute_url メソッド内で行うべき
+            heading_url = @wrapped_issue.resolve_absolute_url
 
             return [{
                 'url' => heading_url,
