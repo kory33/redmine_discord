@@ -80,21 +80,18 @@ module RedmineDiscord
         end
 
         def to_diff_fields
-            attribute_diffs = @issue.attributes.keys.map {|attrib_key|
-                get_diff attrib_key
+            diff_fields = @issue.attributes.keys.map {|attrib_key|
+                # treat description field specially because this gets handled another time
+                get_diff_field_for attrib_key unless attrib_key == 'description'
             }.compact
 
-            return attribute_diffs.map {|attribute|
-                {
-                    name: attribute[:name],
-                    value: "`#{attribute[:old_value]}` => `#{attribute[:new_value]}`",
-                    inline: true
-                }
-            }
+            # TODO add diff field of description(just like diff command)
+
+            return diff_fields
         end
 
     private
-        def get_diff(attribute_name)
+        def get_diff_field_for(attribute_name)
             attribute_root_name = attribute_name.chomp('_id')
 
             new_value, old_value =
@@ -106,8 +103,8 @@ module RedmineDiscord
 
             return {
                 name: attribute_root_name,
-                new_value: new_value || 'nil',
-                old_value: old_value || 'nil'
+                value: "`#{new_value || 'None'}` => `#{old_value || 'None'}`",
+                inline: true
             } unless new_value == old_value
         end
 
@@ -116,8 +113,32 @@ module RedmineDiscord
                 return [@issue.send(attribute_root_name), @issue.send(attribute_root_name + '_was')]
             end
 
-            puts "unknown attribute name given : #{attribute_root_name}"
-            [nil, nil]
+            new_value = @issue.send(attribute_root_name)
+            old_id = @issue.send(attribute_root_name + '_id_was')
+
+            old_value = case attribute_root_name
+                            when 'project'
+                                Project.find(old_id)
+                            when 'category'
+                                nil
+                            when 'priority'
+                                IssuePriority.find(old_id)
+                            when 'fixed_version'
+                                nil
+                            when 'author'
+                                # ignore this because it never changes
+                                @issue.author
+                            when 'parent'
+                                nil
+                            when 'root'
+                                # ignore this attribute because this can be inferred from tracker/subject
+                                @issue.root
+                            else
+                                puts "unknown attribute name given : #{attribute_root_name}"
+                                nil
+                         end
+
+            return [new_value, old_value]
         end
     end
 end
