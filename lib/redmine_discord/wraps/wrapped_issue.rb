@@ -78,5 +78,46 @@ module RedmineDiscord
                 'inline' => false
             }
         end
+
+        def to_diff_fields
+            attribute_diffs = @issue.attributes.keys.map {|attrib_key|
+                get_diff attrib_key
+            }.compact
+
+            return attribute_diffs.map {|attribute|
+                {
+                    name: attribute[:name],
+                    value: "`#{attribute[:old_value]}` => `#{attribute[:new_value]}`",
+                    inline: true
+                }
+            }
+        end
+
+    private
+        def get_diff(attribute_name)
+            attribute_root_name = attribute_name.chomp('_id')
+
+            new_value, old_value =
+                if attribute_name == attribute_root_name
+                    [@issue.send(attribute_name), @issue.send(attribute_name + '_was')]
+                else
+                    diff_for_id_attribute attribute_root_name
+                end
+
+            return {
+                name: attribute_root_name,
+                new_value: new_value || 'nil',
+                old_value: old_value || 'nil'
+            } unless new_value == old_value
+        end
+
+        def diff_for_id_attribute(attribute_root_name)
+            if Issue.method_defined? "#{attribute_root_name}_was".to_sym
+                return [@issue.send(attribute_root_name), @issue.send(attribute_root_name + '_was')]
+            end
+
+            puts "unknown attribute name given : #{attribute_root_name}"
+            [nil, nil]
+        end
     end
 end

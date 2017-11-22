@@ -47,10 +47,7 @@ module RedmineDiscord
         end
 
         def to_embed_array
-            # prepare fields in heading embed
-            fields = [
-                # TODO add property diff field
-            ].compact
+            fields = @wrapped_issue.to_diff_fields
 
             notes_field = @wrapped_journal.to_notes_field
 

@@ -17,11 +17,11 @@ module RedmineDiscord
             @dispatcher.dispatch embed_object, project
         end
 
-        def controller_issues_edit_after_save(context={})
+        def controller_issues_edit_before_save(context={})
             issue = context[:issue]
             journal = context[:journal]
 
-            return if issue.is_private? || journal.private_notes?
+            return if issue.is_private? || journal.private_notes? || issue.invalid?
 
             project = issue.project
             embed_object = IssueEditEmbed.new context
