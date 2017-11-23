@@ -117,7 +117,7 @@ module RedmineDiscord
           new_value
         else
           puts "unknown attribute name given : #{attribute_root_name}"
-          nil
+          new_value
       end rescue nil
 
       [new_value, old_value]
