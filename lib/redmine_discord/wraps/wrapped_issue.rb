@@ -45,10 +45,7 @@ module RedmineDiscord
     end
 
     def resolve_absolute_url
-      host = Setting.host_name.to_s.chomp('/')
-      protocol = Setting.protocol
-
-      "#{protocol}://#{host}/issues/#{@issue.id}"
+      "#{root_url_of_issues}#{@issue.id}"
     end
 
     def get_separator_field
@@ -62,6 +59,7 @@ module RedmineDiscord
       }.compact
 
       # TODO add diff field of description(just like diff command)
+      # TODO add parent issue diff field in a link form
 
       diff_fields
     end
@@ -79,7 +77,7 @@ module RedmineDiscord
         end
 
       EmbedField.new(attribute_root_name,
-                     "`#{new_value || 'None'}` => `#{old_value || 'None'}`",
+                     "`#{old_value || 'None'}` => `#{new_value || 'None'}`",
                      true).to_hash unless new_value == old_value
     end
 
@@ -95,25 +93,27 @@ module RedmineDiscord
         when 'project'
           Project.find(old_id)
         when 'category'
-          nil
+          IssueCategory.find(old_id)
         when 'priority'
           IssuePriority.find(old_id)
         when 'fixed_version'
-          nil
-        when 'author'
-          # ignore this because it never changes
-          @issue.author
-        when 'parent'
-          nil
-        when 'root'
-          # ignore this attribute because this can be inferred from tracker/subject
-          @issue.root
+          Version.find(old_id)
+        when 'author', 'parent', 'root'
+          # ignore these fields
+          new_value
         else
           puts "unknown attribute name given : #{attribute_root_name}"
           nil
       end
 
       [new_value, old_value]
+    end
+
+    def root_url_of_issues
+      host = Setting.host_name.to_s.chomp('/')
+      protocol = Setting.protocol
+
+      "#{protocol}://#{host}/issues/"
     end
   end
 end
