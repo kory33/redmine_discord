@@ -9,13 +9,7 @@ module RedmineDiscord
 
     def to_embed_array
       # prepare fields in heading / remove nil fields
-      fields = [
-          @wrapped_issue.to_author_field,
-          @wrapped_issue.to_assignee_field,
-          @wrapped_issue.to_due_date_field,
-          @wrapped_issue.to_estimated_hours_field,
-          @wrapped_issue.to_priority_field,
-      ].compact
+      fields = @wrapped_issue.to_creation_information_fields.compact
 
       description_field = @wrapped_issue.to_description_field
 

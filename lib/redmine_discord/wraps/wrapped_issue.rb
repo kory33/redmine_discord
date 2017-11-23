@@ -6,34 +6,6 @@ module RedmineDiscord
       @issue = issue
     end
 
-    def to_author_field
-      EmbedField.new('Author', "#{@issue.author.firstname} #{@issue.author.lastname}", true).to_hash
-    end
-
-    def to_assignee_field
-      if @issue.assigned_to.present?
-        EmbedField.new('Assignee',
-                       "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
-                       true).to_hash
-      end
-    end
-
-    def to_due_date_field
-      if @issue.due_date
-        EmbedField.new('Due Date', @issue.due_date.to_s, true).to_hash
-      end
-    end
-
-    def to_estimated_hours_field
-      if @issue.estimated_hours
-        EmbedField.new('Estimated Hours', @issue.estimated_hours.to_s, true).to_hash
-      end
-    end
-
-    def to_priority_field
-      EmbedField.new('Priority', @issue.priority.name, true).to_hash
-    end
-
     def to_heading_title
       "#{@issue.project.name} - #{@issue.tracker} ##{@issue.id}: #{@issue.subject}"
     end
@@ -48,8 +20,22 @@ module RedmineDiscord
       url_of @issue.id
     end
 
-    def get_separator_field
-      EmbedField.new('---------------------------', "\u200b", false).to_hash
+    def to_creation_information_fields
+      display_attributes = ['author_id', 'assigned_to_id', 'priority_id', 'due_date',
+                            'status_id', 'done_ratio', 'estimated_hours',
+                            'category_id', 'fixed_version_id', 'parent_id']
+
+      display_attributes.map {|attribute_name|
+        value = value_for attribute_name rescue nil
+
+        if attribute_name == 'parent_id'
+          value = value.blank? ? nil : "[##{value.id}](#{url_of value.id})"
+        else
+          value = value.blank? ? nil : "`#{value}`"
+        end
+
+        EmbedField.new(attribute_name, value, true).to_hash if value
+      }
     end
 
     def to_diff_fields
@@ -133,5 +119,9 @@ module RedmineDiscord
 
       "#{protocol}://#{host}/issues/#{issue_id}"
     end
+  end
+
+  def self.get_separator_field
+    EmbedField.new('---------------------------', "\u200b", false).to_hash
   end
 end
