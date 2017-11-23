@@ -53,57 +53,54 @@ module RedmineDiscord
     end
 
     def to_diff_fields
-      diff_fields = @issue.attributes.keys.map {|attrib_key|
-        # treat description field specially because this gets handled another time
-        get_diff_field_for attrib_key unless attrib_key == 'description'
-      }
-
-      diff_fields.push get_diff_field_for_parent_issue
-
-      # TODO add diff field of description(just like diff command)
-
-      diff_fields.compact
+      @issue.attributes.keys.map{|key| get_diff_field_for key}.compact
     end
 
     private
 
-    def get_diff_field_for_parent_issue
-      current = @issue.parent_issue_id
-      old = @issue.parent_id_was
+    def get_diff_field_for(attribute_name)
+      new_value = value_for attribute_name
+      old_value = old_value_for attribute_name
 
-      current, old = [current, old].map {|issue_id|
-        issue_id.blank? ? '`None`' : "[##{issue_id}](#{url_of issue_id})"
-      }
+      attribute_root_name = attribute_name.chomp '_id'
 
-      EmbedField.new('parent',
-                     "#{old} => #{current}",
-                     true).to_hash unless current == old
+      case attribute_root_name
+        when 'description'
+          # TODO implement diff for description
+          nil
+        when 'parent'
+          new_value, old_value = [new_value, old_value].map do |issue|
+            issue.blank? ? '`None`' : "[##{issue.id}](#{url_of issue.id})"
+          end
+          EmbedField.new(attribute_root_name, "#{old_value} => #{new_value}", true).to_hash
+        else
+          embed_value = "`#{old_value || 'None'}` => `#{new_value || 'None'}`"
+          EmbedField.new(attribute_root_name, embed_value, true).to_hash
+      end unless new_value == old_value
     end
 
-    def get_diff_field_for(attribute_name)
+    def value_for(attribute_name)
+      if attribute_name == 'root_id'
+        @issue.root_id
+      else
+        @issue.send attribute_name.chomp('_id')
+      end
+    end
+
+    def old_value_for(attribute_name)
       attribute_root_name = attribute_name.chomp('_id')
 
-      new_value, old_value =
-        if attribute_name == attribute_root_name
-          [@issue.send(attribute_name), @issue.send(attribute_name + '_was')]
-        else
-          diff_for_id_attribute attribute_root_name
-        end
-
-      EmbedField.new(attribute_root_name,
-                     "`#{old_value || 'None'}` => `#{new_value || 'None'}`",
-                     true).to_hash unless new_value == old_value
-    end
-
-    def diff_for_id_attribute(attribute_root_name)
-      if Issue.method_defined? "#{attribute_root_name}_was".to_sym
-        return [@issue.send(attribute_root_name), @issue.send(attribute_root_name + '_was')]
+      if attribute_root_name == attribute_name
+        return @issue.send(attribute_name + '_was')
       end
 
-      new_value = @issue.send(attribute_root_name)
+      if Issue.method_defined? "#{attribute_root_name}_was".to_sym
+        return @issue.send(attribute_root_name + '_was')
+      end
+
       old_id = @issue.send(attribute_root_name + '_id_was')
 
-      old_value = case attribute_root_name
+      case attribute_root_name
         when 'project'
           Project.find(old_id)
         when 'category'
@@ -112,15 +109,16 @@ module RedmineDiscord
           IssuePriority.find(old_id)
         when 'fixed_version'
           Version.find(old_id)
-        when 'author', 'parent', 'root'
-          # ignore these fields
-          new_value
+        when 'parent'
+          Issue.find(old_id)
+        when 'author'
+          @issue.author
+        when 'root'
+          @issue.root_id
         else
           puts "unknown attribute name given : #{attribute_root_name}"
-          new_value
+          @issue.send(attribute_root_name)
       end rescue nil
-
-      [new_value, old_value]
     end
 
     def url_of(issue_id)
