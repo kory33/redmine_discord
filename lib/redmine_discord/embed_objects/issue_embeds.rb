@@ -20,7 +20,7 @@ module RedmineDiscord
       description_field = @wrapped_issue.to_description_field
 
       if description_field != nil
-        fields.push @wrapped_issue.get_separator_field
+        fields.push RedmineDiscord::get_separator_field unless fields.empty?
         fields.push description_field
       end
 
@@ -53,7 +53,7 @@ module RedmineDiscord
       notes_field = @wrapped_journal.to_notes_field
 
       if notes_field
-        fields.push @wrapped_issue.get_separator_field unless fields.empty?
+        fields.push RedmineDiscord::get_separator_field unless fields.empty?
         fields.push notes_field
       end
 
