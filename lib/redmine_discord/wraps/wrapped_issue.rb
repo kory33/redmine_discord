@@ -82,6 +82,8 @@ module RedmineDiscord
     def value_for(attribute_name)
       if attribute_name == 'root_id'
         @issue.root_id
+      elsif attribute_name == 'parent_id'
+        Issue.find(@issue.parent_issue_id)
       else
         @issue.send attribute_name.chomp('_id')
       end
