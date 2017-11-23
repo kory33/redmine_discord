@@ -29,18 +29,18 @@ module RedmineDiscord
     private
 
     def construct_webhook_body(embed_object)
-      return {
-        'username' => Setting.plugin_redmine_discord['webhook_username'],
-        'avatar_url' => Setting.plugin_redmine_discord['webhook_avatar_url'],
-        'embeds' => embed_object.to_embed_array
+      {
+          username: Setting.plugin_redmine_discord['webhook_username'],
+          avatar_url: Setting.plugin_redmine_discord['webhook_avatar_url'],
+          embeds: embed_object.to_embed_array
       }
     end
 
     def fetch_webhook_targets(project)
       return [] if project.blank?
 
-      field = ProjectCustomField.find_by_name("Discord Webhooks")
-      return project.custom_field_value(field) rescue []
+      field = ProjectCustomField.find_by_name('Discord Webhooks')
+      project.custom_field_value(field) rescue []
     end
   end
 end

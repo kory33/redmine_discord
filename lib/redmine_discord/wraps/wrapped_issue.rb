@@ -1,3 +1,5 @@
+require_relative '../embed_objects/issue_embeds'
+
 module RedmineDiscord
   class WrappedIssue
     def initialize(issue)
@@ -5,78 +7,52 @@ module RedmineDiscord
     end
 
     def to_author_field
-      return {
-        'name' => 'Author',
-        'value' => "#{@issue.author.firstname} #{@issue.author.lastname}",
-        'inline' => true
-      }
+      EmbedField.new('Author', "#{@issue.author.firstname} #{@issue.author.lastname}", true).to_hash
     end
 
     def to_assignee_field
       if @issue.assigned_to.present?
-        return {
-          'name' => 'Assignee',
-          'value' => "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
-          'inline' => true
-        }
+        EmbedField.new('Assignee',
+                       "#{@issue.assigned_to.firstname} #{@issue.assigned_to.lastname}",
+                       true).to_hash
       end
     end
 
     def to_due_date_field
       if @issue.due_date
-        return {
-          'name' => 'Due Date',
-          'value' => @issue.due_date.to_s,
-          'inline' => true
-        }
+        EmbedField.new('Due Date', @issue.due_date.to_s, true).to_hash
       end
     end
 
     def to_estimated_hours_field
       if @issue.estimated_hours
-        return {
-          'name' => 'Estimated Hours',
-          'value' => @issue.estimated_hours.to_s,
-          'inline' => true
-        }
+        EmbedField.new('Estimated Hours', @issue.estimated_hours.to_s, true).to_hash
       end
     end
 
     def to_priority_field
-      return {
-        'name' => 'Priority',
-        'value' => @issue.priority.name,
-        'inline' => true
-      }
+      EmbedField.new('Priority', @issue.priority.name, true).to_hash
     end
 
     def to_heading_title
-      return "#{@issue.project.name} - #{@issue.tracker} ##{@issue.id}: #{@issue.subject}"
+      "#{@issue.project.name} - #{@issue.tracker} ##{@issue.id}: #{@issue.subject}"
     end
 
     def to_description_field
       if @issue.description.present?
-        return {
-          'name' => 'Description',
-          'value' => @issue.description,
-          'inline' => false
-        }
+        EmbedField.new('Description', @issue.description, false).to_hash
       end
     end
 
-    def resolve_absolute_url()
+    def resolve_absolute_url
       host = Setting.host_name.to_s.chomp('/')
       protocol = Setting.protocol
 
-      return "#{protocol}://#{host}/issues/#{@issue.id}"
+      "#{protocol}://#{host}/issues/#{@issue.id}"
     end
 
     def get_separator_field
-      return {
-        'name' => '---------------------------',
-        'value' => "\u200b",
-        'inline' => false
-      }
+      EmbedField.new('---------------------------', "\u200b", false).to_hash
     end
 
     def to_diff_fields
@@ -87,7 +63,7 @@ module RedmineDiscord
 
       # TODO add diff field of description(just like diff command)
 
-      return diff_fields
+      diff_fields
     end
 
     private
@@ -102,11 +78,9 @@ module RedmineDiscord
           diff_for_id_attribute attribute_root_name
         end
 
-      return {
-        name: attribute_root_name,
-        value: "`#{new_value || 'None'}` => `#{old_value || 'None'}`",
-        inline: true
-      } unless new_value == old_value
+      EmbedField.new(attribute_root_name,
+                     "`#{new_value || 'None'}` => `#{old_value || 'None'}`",
+                     true).to_hash unless new_value == old_value
     end
 
     def diff_for_id_attribute(attribute_root_name)
@@ -139,7 +113,7 @@ module RedmineDiscord
           nil
       end
 
-      return [new_value, old_value]
+      [new_value, old_value]
     end
   end
 end

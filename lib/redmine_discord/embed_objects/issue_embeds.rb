@@ -26,18 +26,18 @@ module RedmineDiscord
 
       heading_url = @wrapped_issue.resolve_absolute_url
 
-      return [{
-                  'url' => heading_url,
-                  'title' => "[New issue] #{@wrapped_issue.to_heading_title}",
-                  'color' => get_fields_color,
-                  'fields' => fields
-              }]
+      [{
+           url: heading_url,
+           title: "[New issue] #{@wrapped_issue.to_heading_title}",
+           color: get_fields_color,
+           fields: fields
+       }]
     end
 
     private
 
     def get_fields_color
-      return 65280
+      65280
     end
   end
 
@@ -59,18 +59,18 @@ module RedmineDiscord
 
       heading_url = @wrapped_issue.resolve_absolute_url
 
-      return [{
-                  'url' => heading_url,
-                  'title' => "[Issue update] #{@wrapped_issue.to_heading_title}",
-                  'color' => get_fields_color,
-                  'fields' => fields
-              }]
+      [{
+           url: heading_url,
+           title: "[Issue update] #{@wrapped_issue.to_heading_title}",
+           color: get_fields_color,
+           fields: fields
+       }]
     end
 
     private
 
     def get_fields_color
-      return 16752640
+      16752640
     end
   end
 end

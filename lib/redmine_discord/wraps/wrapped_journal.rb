@@ -1,3 +1,5 @@
+require_relative '../embed_objects/embed_field'
+
 module RedmineDiscord
   class WrappedJournal
     def initialize(journal)
@@ -8,11 +10,7 @@ module RedmineDiscord
       notes = @journal.notes
 
       if notes.present?
-        return {
-          'name' => 'Notes',
-          'value' => notes,
-          'inline' => false
-        }
+        EmbedField.new('Notes', notes, false).to_hash
       end
     end
   end
