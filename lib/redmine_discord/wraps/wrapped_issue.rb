@@ -45,7 +45,7 @@ module RedmineDiscord
     end
 
     def resolve_absolute_url
-      "#{root_url_of_issues}#{@issue.id}"
+      url_of @issue.id
     end
 
     def get_separator_field
@@ -56,15 +56,29 @@ module RedmineDiscord
       diff_fields = @issue.attributes.keys.map {|attrib_key|
         # treat description field specially because this gets handled another time
         get_diff_field_for attrib_key unless attrib_key == 'description'
-      }.compact
+      }
+
+      diff_fields.push get_diff_field_for_parent_issue
 
       # TODO add diff field of description(just like diff command)
-      # TODO add parent issue diff field in a link form
 
-      diff_fields
+      diff_fields.compact
     end
 
     private
+
+    def get_diff_field_for_parent_issue
+      current = @issue.parent_issue_id
+      old = @issue.parent_id_was
+
+      current, old = [current, old].map {|issue_id|
+        issue_id.blank? ? '`None`' : "[##{issue_id}](#{url_of issue_id})"
+      }
+
+      EmbedField.new('parent',
+                     "#{old} => #{current}",
+                     true).to_hash unless current == old
+    end
 
     def get_diff_field_for(attribute_name)
       attribute_root_name = attribute_name.chomp('_id')
@@ -104,16 +118,16 @@ module RedmineDiscord
         else
           puts "unknown attribute name given : #{attribute_root_name}"
           nil
-      end
+      end rescue nil
 
       [new_value, old_value]
     end
 
-    def root_url_of_issues
+    def url_of(issue_id)
       host = Setting.host_name.to_s.chomp('/')
       protocol = Setting.protocol
 
-      "#{protocol}://#{host}/issues/"
+      "#{protocol}://#{host}/issues/#{issue_id}"
     end
   end
 end
