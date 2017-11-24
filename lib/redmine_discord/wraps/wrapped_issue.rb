@@ -56,11 +56,11 @@ module RedmineDiscord
           nil
         when 'parent'
           new_value, old_value = [new_value, old_value].map do |issue|
-            issue.blank? ? '`None`' : "[##{issue.id}](#{url_of issue.id})"
+            issue.blank? ? '`N/A`' : "[##{issue.id}](#{url_of issue.id})"
           end
           EmbedField.new(attribute_root_name, "#{old_value} => #{new_value}", true).to_hash
         else
-          embed_value = "`#{old_value || 'None'}` => `#{new_value || 'None'}`"
+          embed_value = "`#{old_value || 'N/A'}` => `#{new_value || 'N/A'}`"
           EmbedField.new(attribute_root_name, embed_value, true).to_hash
       end unless new_value == old_value
     end
