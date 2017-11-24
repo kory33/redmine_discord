@@ -55,16 +55,29 @@ module RedmineDiscord
 
       [{
            url: heading_url,
-           title: "[Issue update] #{@wrapped_issue.to_heading_title}",
+           title: "#{get_title_tag} #{@wrapped_issue.to_heading_title}",
            color: get_fields_color,
            fields: fields
        }]
     end
 
-    private
+    def get_title_tag
+      '[Issue update]'
+    end
 
     def get_fields_color
       16752640
+    end
+  end
+
+  class IssueCloseEmbed < IssueEditEmbed
+    def get_title_tag
+      '[Issue closed]'
+    end
+
+    def get_fields_color
+      # a3a3a3 in hex
+      10724259
     end
   end
 end

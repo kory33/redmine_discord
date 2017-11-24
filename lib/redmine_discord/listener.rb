@@ -24,7 +24,11 @@ module RedmineDiscord
       return if issue.is_private? || journal.private_notes? || issue.invalid?
 
       project = issue.project
-      embed_object = IssueEditEmbed.new context
+      embed_object = if issue.closed?
+        IssueCloseEmbed.new context
+      else
+        IssueEditEmbed.new context
+      end
 
       @dispatcher.dispatch embed_object, project
     end
