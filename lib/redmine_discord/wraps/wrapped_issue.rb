@@ -86,7 +86,7 @@ module RedmineDiscord
         return User.find(@issue.assigned_to_id_was) rescue nil
       end
 
-      if Issue.method_defined? "#{attribute_root_name}_was".to_sym
+      if @issue.respond_to? "#{attribute_root_name}_was"
         return @issue.send(attribute_root_name + '_was')
       end
 
