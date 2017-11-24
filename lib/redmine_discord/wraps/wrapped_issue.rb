@@ -72,7 +72,7 @@ module RedmineDiscord
         Issue.find(@issue.parent_issue_id)
       else
         @issue.send attribute_name.chomp('_id')
-      end
+      end rescue nil
     end
 
     def old_value_for(attribute_name)
