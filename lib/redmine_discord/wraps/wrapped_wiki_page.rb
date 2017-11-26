@@ -5,8 +5,6 @@ module RedmineDiscord
     def initialize(wiki_page)
       @wiki_page = wiki_page
       @content = wiki_page.content
-
-      p @content.attributes
     end
 
     def resolve_absolute_url
