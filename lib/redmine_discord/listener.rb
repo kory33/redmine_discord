@@ -38,7 +38,11 @@ module RedmineDiscord
       wiki_page = context[:page]
       project = wiki_page.project
 
-      embed_object = WikiEditEmbed.new context
+      embed_object = if wiki_page.content.version == 1
+        WikiNewEmbed.new context
+      else
+        WikiEditEmbed.new context
+      end
 
       @dispatcher.dispatch embed_object, project
     end

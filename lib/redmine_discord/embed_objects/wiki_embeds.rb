@@ -26,4 +26,15 @@ module RedmineDiscord
       255
     end
   end
+
+  class WikiNewEmbed < WikiEditEmbed
+    def get_title_tag
+      '[New wiki page]'
+    end
+
+    def get_fields_color
+      # 00ffff
+      65535
+    end
+  end
 end
