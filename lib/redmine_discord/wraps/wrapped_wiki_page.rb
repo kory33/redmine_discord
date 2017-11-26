@@ -21,5 +21,10 @@ module RedmineDiscord
     def to_author_field
       EmbedField.new 'author', @content.author.to_s, true
     end
+
+    def to_text_field
+      text = "```#{@content.text.gsub(/`/, "\u200b`")}```"
+      EmbedField.new('content', text, false).to_hash
+    end
   end
 end
