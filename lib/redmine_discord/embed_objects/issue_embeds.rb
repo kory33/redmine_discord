@@ -1,3 +1,4 @@
+require_relative '../embed_objects/field_helper'
 require_relative '../wraps/wrapped_issue'
 require_relative '../wraps/wrapped_journal'
 
