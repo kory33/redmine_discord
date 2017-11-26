@@ -1,3 +1,0 @@
-= redmine_discord
-
-Description goes here
