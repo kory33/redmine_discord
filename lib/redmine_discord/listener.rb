@@ -1,4 +1,5 @@
 require_relative 'embed_objects/issue_embeds'
+require_relative 'embed_objects/wiki_embeds'
 require_relative 'dispatcher'
 
 module RedmineDiscord
@@ -29,6 +30,15 @@ module RedmineDiscord
       else
         IssueEditEmbed.new context
       end
+
+      @dispatcher.dispatch embed_object, project
+    end
+
+    def controller_wiki_edit_after_save(context={})
+      wiki_page = context[:page]
+      project = wiki_page.project
+
+      embed_object = WikiEditEmbed.new context
 
       @dispatcher.dispatch embed_object, project
     end
