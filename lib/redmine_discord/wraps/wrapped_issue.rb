@@ -12,7 +12,8 @@ module RedmineDiscord
 
     def to_description_field
       if @issue.description.present?
-        EmbedField.new('Description', @issue.description, false).to_hash
+        description = "```#{@issue.description.gsub(/`/, "\u200b`")}```"
+        EmbedField.new('Description', description, false).to_hash
       end
     end
 
