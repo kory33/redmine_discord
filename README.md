@@ -25,3 +25,11 @@ via [Discord's Webhook API](https://discordapp.com/developers/docs/resources/web
 4. Select `Discord Webhooks` in projects' Settings
 
 and you are done!
+
+### Other Required Settings
+
+* In order to make the embed links work, you need to configure
+`Administration > Settings > General > Host name and path / Protocol`.
+With regards to the host name/path, (in most of cases) you just need to
+copy the address shown just below the input box.
+If this does not work, put the address of the server **without** protocol.
