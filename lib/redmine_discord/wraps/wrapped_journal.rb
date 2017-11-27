@@ -14,5 +14,9 @@ module RedmineDiscord
         EmbedField.new('Notes', block_notes, false).to_hash
       end
     end
+
+    def to_editor_field
+      EmbedField.new('Edited by', "`#{@journal.event_author}`", false).to_hash
+    end
   end
 end
