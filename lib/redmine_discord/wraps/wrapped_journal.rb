@@ -10,7 +10,7 @@ module RedmineDiscord
       notes = @journal.notes
 
       if notes.present?
-        block_notes = "```#{ntoes.gsub(/`/, "\u200b`")}```"
+        block_notes = "```#{notes.to_s.gsub(/`/, "\u200b`")}```"
         EmbedField.new('Notes', block_notes, false).to_hash
       end
     end
