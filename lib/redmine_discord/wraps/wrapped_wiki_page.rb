@@ -11,7 +11,7 @@ module RedmineDiscord
       host = Setting.host_name.to_s.chomp('/')
       protocol = Setting.protocol
 
-      "#{protocol}://#{host}/projects/#{@wiki_page.project}/wiki/#{@wiki_page.title}"
+      "#{protocol}://#{host}/projects/#{@wiki_page.project.identifier}/wiki/#{@wiki_page.title}"
     end
 
     def to_heading_title
