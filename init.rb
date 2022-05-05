@@ -17,6 +17,8 @@ Redmine::Plugin.register :redmine_discord do
   })
 end
 
+# Since RoR 6 and Redmine 5, zeitwerk takes care of autoloading variables instead of require_dependency
+# Ref. https://www.redmine.org/news/135
 if Rails.configuration.respond_to?(:autoloader) && Rails.configuration.autoloader == :zeitwerk
   Rails.autoloaders.each { |loader| loader.ignore(File.dirname(__FILE__) + '/lib') }
 end
