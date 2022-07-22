@@ -3,7 +3,7 @@ require_relative 'embed_objects/wiki_embeds'
 require_relative 'dispatcher'
 
 module RedmineDiscord
-  class EventListener < Redmine::Hook::Listener
+  class Listener < Redmine::Hook::Listener
     def initialize
       @dispatcher = DiscordWebhookDispatcher.new
     end
