@@ -1,5 +1,4 @@
 require 'redmine'
-require_dependency 'redmine_discord/listener'
 
 Redmine::Plugin.register :redmine_discord do
   name 'Redmine Discord plugin'
@@ -17,3 +16,7 @@ Redmine::Plugin.register :redmine_discord do
     partial: 'settings/redmine_discord'
   })
 end
+
+# Since RoR 6 and Redmine 5, zeitwerk takes care of autoloading variables instead of require_dependency
+# ref. https://www.redmine.org/news/135
+require File.dirname(__FILE__) + '/lib/redmine_discord/listener'
