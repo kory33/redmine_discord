@@ -1,5 +1,9 @@
+require_relative 'embed_field'
+
 module RedmineDiscord
-  def self.get_separator_field
-    EmbedField.new('---------------------------', "\u200b", false).to_hash
+  module EmbedObjects::FieldHelper
+    def self.get_separator_field
+      EmbedObjects::EmbedField.new('---------------------------', "\u200b", false).to_hash
+    end
   end
 end

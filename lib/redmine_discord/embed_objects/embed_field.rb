@@ -1,5 +1,5 @@
 module RedmineDiscord
-  class EmbedField
+  class EmbedObjects::EmbedField
     def initialize(name, value, inline)
       @name = name
       @value = value

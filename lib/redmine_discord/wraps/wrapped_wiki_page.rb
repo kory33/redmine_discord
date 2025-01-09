@@ -1,7 +1,7 @@
-require_relative '../embed_objects/issue_embeds'
+require_relative '../embed_objects/embed_field'
 
 module RedmineDiscord
-  class WrappedWikiPage
+  class Wraps::WrappedWikiPage
     def initialize(wiki_page)
       @wiki_page = wiki_page
       @content = wiki_page.content
@@ -19,12 +19,12 @@ module RedmineDiscord
     end
 
     def to_author_field
-      EmbedField.new 'author', @content.author.to_s, true
+      EmbedObjects::EmbedField.new 'author', @content.author.to_s, true
     end
 
     def to_text_field
       text = "```#{@content.text.gsub(/`/, "\u200b`")}```"
-      EmbedField.new('content', text, false).to_hash
+      EmbedObjects::EmbedField.new('content', text, false).to_hash
     end
   end
 end
