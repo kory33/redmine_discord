@@ -1,9 +1,9 @@
 require_relative 'embed_objects/issue_embeds'
 require_relative 'embed_objects/wiki_embeds'
-require_relative 'dispatcher'
+require_relative 'discord_webhook_dispatcher'
 
 module RedmineDiscord
-  class Listener < Redmine::Hook::Listener
+  class EventListener < Redmine::Hook::Listener
     def initialize
       @dispatcher = DiscordWebhookDispatcher.new
     end
@@ -13,7 +13,7 @@ module RedmineDiscord
       return if issue.is_private?
 
       project = issue.project
-      embed_object = NewIssueEmbed.new context
+      embed_object = EmbedObjects::IssueEmbeds::NewIssueEmbed.new context
 
       @dispatcher.dispatch embed_object, project
     end
@@ -26,9 +26,9 @@ module RedmineDiscord
 
       project = issue.project
       embed_object = if issue.closed?
-        IssueCloseEmbed.new context
+        EmbedObjects::IssueEmbeds::IssueCloseEmbed.new context
       else
-        IssueEditEmbed.new context
+        EmbedObjects::IssueEmbeds::IssueEditEmbed.new context
       end
 
       @dispatcher.dispatch embed_object, project
@@ -39,9 +39,9 @@ module RedmineDiscord
       project = wiki_page.project
 
       embed_object = if wiki_page.content.version == 1
-        WikiNewEmbed.new context
+        EmbedObjects::WikiEmbeds::WikiNewEmbed.new context
       else
-        WikiEditEmbed.new context
+        EmbedObjects::WikiEmbeds::WikiEditEmbed.new context
       end
 
       @dispatcher.dispatch embed_object, project
